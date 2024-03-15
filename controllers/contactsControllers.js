@@ -1,4 +1,4 @@
-import contactsService from "../services/contactsServices.js";
+import * as contactsService from "../services/contactsServices.js";
 
 import HttpError from "../helpers/HttpError.js";
 
@@ -39,7 +39,7 @@ export const deleteContact = async (req, res, next) => {
         }
 
         res.json({
-            message: "Delete success"
+            result
         });
     }
     catch(error) {

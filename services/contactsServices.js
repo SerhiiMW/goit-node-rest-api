@@ -31,13 +31,11 @@ export async function removeContact(contactId) {
     return result;
   }
   
-export async function addContact(name, email, phone) {
+export async function addContact(data) {
     const contacts = await listContacts();
     const newContacts = {
         id: nanoid(),
-        name,
-        email,
-        phone
+        ...data,
     };
     contacts.push(newContacts);
     await updateContacts(contacts);
@@ -46,7 +44,7 @@ export async function addContact(name, email, phone) {
   }
 
   export const updateContactById = async (id, data) => {
-    const contacts = await getAllMovies();
+    const contacts = await listContacts();
     const index = contacts.findIndex(item => item.id === id);
     if (index === -1) {
         return null;
