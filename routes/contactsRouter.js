@@ -7,6 +7,8 @@ import {
   updateContact,
 } from "../controllers/contactsControllers.js";
 
+import { getAllContacts, getOneContact, deleteContact, createContact, updateContact } from "../controllers/contactsControllers.js";
+
 const contactsRouter = express.Router();
 
 contactsRouter.get("/", getAllContacts);
