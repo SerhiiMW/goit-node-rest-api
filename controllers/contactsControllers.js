@@ -20,7 +20,7 @@ export const getOneContact = async (req, res, next) => {
         const { id } = req.params;
         const result = await contactsService.getContactById(id);
         if (!result) {
-            throw HttpError(404, `Movie with id=${id} not found`);
+            throw HttpError(404, `Contact with id=${id} not found`);
         }
 
         res.json(result);
@@ -35,12 +35,12 @@ export const deleteContact = async (req, res, next) => {
         const {id} = req.params;
         const result = await contactsService.removeContact(id);
         if (!result) {
-            throw HttpError(404, `Movie with id=${id} not found`);
+            throw HttpError(404, `Contact with id=${id} not found`);
         }
 
-        res.json({
+        res.json(
             result
-        });
+        );
     }
     catch(error) {
         next(error);
@@ -70,8 +70,12 @@ export const updateContact = async (req, res, next) => {
         }
         const {id} = req.params;
         const result = await contactsService.updateContactById(id, req.body);
+        if(!req.body) {
+            throw HttpError(400, `Body must have at least one field`);
+        }
+
         if (!result) {
-            throw HttpError(404, `Movie with id=${id} not found`);
+            throw HttpError(404, `Contact with id=${id} not found`);
         }
 
         res.json(result);
