@@ -1,10 +1,12 @@
 import * as contactsService from "../services/contactsServices.js";
 
+import ctrlWrapper from "../decorators/ctrlWrapper.js";
+
 import HttpError from "../helpers/HttpError.js";
 
 import { createContactSchema, updateContactSchema } from "../schemas/contactsSchemas.js";
 
-export const getAllContacts = async (req, res, next) => {
+const getAllContacts = async (req, res, next) => {
     try {
         const result = await contactsService.listContacts();
 
@@ -15,7 +17,7 @@ export const getAllContacts = async (req, res, next) => {
     }
 };
 
-export const getOneContact = async (req, res, next) => {
+const getOneContact = async (req, res, next) => {
     try {
         const { id } = req.params;
         const result = await contactsService.getContactById(id);
@@ -30,7 +32,7 @@ export const getOneContact = async (req, res, next) => {
     }
 };
 
-export const deleteContact = async (req, res, next) => {
+const deleteContact = async (req, res, next) => {
     try {
         const {id} = req.params;
         const result = await contactsService.removeContact(id);
@@ -47,7 +49,7 @@ export const deleteContact = async (req, res, next) => {
     }
 };
 
-export const createContact = async (req, res, next) => {
+const createContact = async (req, res, next) => {
     try {
         const {error} = createContactSchema.validate(req.body);
         if(error) {
@@ -62,7 +64,7 @@ export const createContact = async (req, res, next) => {
     }
 };
 
-export const updateContact = async (req, res, next) => {
+const updateContact = async (req, res, next) => {
     try {
         const {error} = updateContactSchema.validate(req.body);
         if(error) {
@@ -84,3 +86,33 @@ export const updateContact = async (req, res, next) => {
     }
 };
 
+const updateStatusContact = async (req, res, next) => {
+    try {
+        const {error} = updateContactSchema.validate(req.body);
+        if(error) {
+            throw HttpError(400, error.message);
+        }
+        const {id} = req.params;
+        const result = await contactsService.updateStatusContact(id, req.body);
+        if(Object.keys(req.body).length === 0) {
+            throw HttpError(400, `Body must have at least one field`);
+        }
+
+        if (!result) {
+            throw HttpError(404, "Not found");
+        }
+        res.json(result);
+    }
+    catch(error) {
+        next(error);
+    }
+};
+
+export default {
+    getAllContacts: ctrlWrapper(getAllContacts),
+    getOneContact: ctrlWrapper(getOneContact),
+    createContact: ctrlWrapper(createContact),
+    updateContact: ctrlWrapper(updateContact),
+    deleteContact: ctrlWrapper(deleteContact),
+    updateStatusContact: ctrlWrapper(updateStatusContact),
+}
